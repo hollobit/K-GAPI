@@ -581,6 +581,7 @@ body {
     <button class="nav-tab" role="tab" data-section="deep-analysis">심층 분석</button>
     <button class="nav-tab" role="tab" data-section="private-compare">민간 비교</button>
     <button class="nav-tab" role="tab" data-section="deprecated">폐기 이력</button>
+    <button class="nav-tab" role="tab" data-section="advanced">심화 분석</button>
   </div>
 </nav>
 
@@ -968,6 +969,95 @@ body {
       <div class="chart-card__title">폐기/변경 타임라인</div>
       <div id="deprecated-timeline"></div>
     </div>
+  </section>
+
+  <!-- ===================================================================
+       Section: 심화 분석 (Phases 9-14)
+       =================================================================== -->
+  <section id="section-advanced" class="section">
+    <h2 class="section__title">심화 분석</h2>
+
+    <!-- Sub-section A: 국제 비교 벤치마크 -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">국제 비교 벤치마크 (9개국)</div>
+      <div style="font-size:0.8rem;color:var(--color-text-secondary);margin-bottom:1rem;">사용자 중심성 · AI 적합성 점수 (0~14점 만점 · 2026-04-03 기준)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.75rem;color:var(--color-primary);">사용자 중심성 순위</div>
+          <div id="adv-bench-uf"></div>
+        </div>
+        <div>
+          <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.75rem;color:var(--color-primary);">AI 적합성 순위</div>
+          <div id="adv-bench-ai"></div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;padding:0.75rem;background:#fce8e6;border-radius:var(--radius);border:1px solid #f5c6c2;">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--color-grade-e);margin-bottom:0.4rem;">한국 위치: 9개국 중 최하위 (사용자 중심성 · AI 적합성 모두)</div>
+        <div style="font-size:0.8rem;color:var(--color-text);line-height:1.6;">
+          <strong>AI 적합성 최대 격차:</strong> HTTP 상태코드 의미론 (한국 0.0 vs 해외 평균 1.80) — 에러 발생 시에도 HTTP 200 반환<br>
+          <strong>공식 정부 MCP 서버 보유국:</strong> 프랑스 (mcp.data.gouv.fr) · 미국 (GovInfo MCP) — 한국 없음<br>
+          <strong>거버넌스 최강:</strong> 싱가포르 APEX 통합 게이트웨이 (31개 기관, 2,400+ API, 월 1억 회 처리)
+        </div>
+      </div>
+      <div style="margin-top:1rem;">
+        <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.5rem;color:var(--color-text-secondary);">등급 범례</div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <span style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:4px;background:var(--color-grade-a-bg);color:var(--color-grade-a);font-weight:600;">A: 12~14점</span>
+          <span style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:4px;background:var(--color-grade-b-bg);color:var(--color-grade-b);font-weight:600;">B: 9~11점</span>
+          <span style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:4px;background:var(--color-grade-c-bg);color:var(--color-grade-c);font-weight:600;">C: 6~8점</span>
+          <span style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:4px;background:var(--color-grade-d-bg);color:var(--color-grade-d);font-weight:600;">D: 3~5점</span>
+          <span style="font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:4px;background:var(--color-grade-e-bg);color:var(--color-grade-e);font-weight:600;">E: 0~2점</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sub-section B: 데이터 갱신 주기 실측 -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">데이터 갱신 주기 실측</div>
+      <div style="font-size:0.8rem;color:var(--color-text-secondary);margin-bottom:1rem;">공식 문서 표기 갱신주기 vs 실제 측정치 비교 — 빨간 행은 과대 표기</div>
+      <div class="data-table-wrapper">
+        <table class="data-table" id="adv-freshness-table">
+          <thead>
+            <tr>
+              <th style="min-width:180px;">API 명</th>
+              <th style="min-width:120px;">표기 주기</th>
+              <th style="min-width:160px;">실측 주기</th>
+              <th style="min-width:60px;">격차</th>
+            </tr>
+          </thead>
+          <tbody id="adv-freshness-tbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:1rem;padding:0.75rem;background:var(--color-grade-c-bg);border-radius:var(--radius);border:1px solid #f5d6b0;font-size:0.8rem;color:var(--color-text);">
+        <strong>구조적 문제:</strong> Last-Modified HTTP 헤더 미제공 · ETag 미지원 · 갱신 실패 시 오래된 데이터 그대로 반환 · API 명세 갱신주기 표기가 "실시간", "일", "수시" 등 모호한 용어 사용
+      </div>
+    </div>
+
+    <!-- Sub-section C: 개발자 불만 TOP 10 -->
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">개발자 불만 TOP 10</div>
+      <div style="font-size:0.8rem;color:var(--color-text-secondary);margin-bottom:1rem;">개발자 블로그·커뮤니티·오픈소스 이슈 트래커 분석 (Velog, Tistory, GitHub, OKKY, Clien)</div>
+      <div id="adv-pain-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;"></div>
+    </div>
+
+    <!-- Sub-section D: 신규 발굴 포털 -->
+    <div class="card">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">신규 발굴 포털</div>
+      <div style="font-size:0.8rem;color:var(--color-text-secondary);margin-bottom:1rem;">기존 조사에서 누락된 독립 포털 발굴 현황 (2026-04-03 기준)</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;">
+        <div class="card stat-card" style="border:2px solid var(--color-primary);">
+          <div class="stat-card__value">173</div>
+          <div class="stat-card__label">기존 조사 포털 수</div>
+        </div>
+        <div class="card stat-card" style="font-size:1.5rem;display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);">+26</div>
+        <div class="card stat-card" style="border:2px solid var(--color-grade-a);">
+          <div class="stat-card__value" style="color:var(--color-grade-a);">199</div>
+          <div class="stat-card__label">신규 발굴 포함 총계</div>
+        </div>
+      </div>
+      <div id="adv-new-portals-list"></div>
+    </div>
+
   </section>
 
 </main>
@@ -15656,6 +15746,189 @@ function initNavigation() {
 }
 
 /* ===================================================================
+   SECTION: 심화 분석 (Phases 9-14)
+   =================================================================== */
+
+var BENCHMARK_DATA = {
+  user_friendliness: [
+    { code:'US', name:'미국', emoji:'🇺🇸', score:12.18, grade:'A' },
+    { code:'EU', name:'유럽연합', emoji:'🇪🇺', score:11.82, grade:'A' },
+    { code:'FR', name:'프랑스', emoji:'🇫🇷', score:11.62, grade:'A' },
+    { code:'SG', name:'싱가포르', emoji:'🇸🇬', score:11.0, grade:'A' },
+    { code:'UK', name:'영국', emoji:'🇬🇧', score:10.36, grade:'B' },
+    { code:'JP', name:'일본', emoji:'🇯🇵', score:9.22, grade:'B' },
+    { code:'AU', name:'호주', emoji:'🇦🇺', score:8.6, grade:'C' },
+    { code:'CA', name:'캐나다', emoji:'🇨🇦', score:7.56, grade:'C' },
+    { code:'KR', name:'한국', emoji:'🇰🇷', score:5.3, grade:'D' }
+  ],
+  ai_readiness: [
+    { code:'SG', name:'싱가포르', emoji:'🇸🇬', score:12.45, grade:'A' },
+    { code:'US', name:'미국', emoji:'🇺🇸', score:12.27, grade:'A' },
+    { code:'FR', name:'프랑스', emoji:'🇫🇷', score:12.0, grade:'A' },
+    { code:'UK', name:'영국', emoji:'🇬🇧', score:11.82, grade:'A' },
+    { code:'EU', name:'유럽연합', emoji:'🇪🇺', score:11.82, grade:'A' },
+    { code:'AU', name:'호주', emoji:'🇦🇺', score:10.2, grade:'B' },
+    { code:'CA', name:'캐나다', emoji:'🇨🇦', score:8.44, grade:'C' },
+    { code:'JP', name:'일본', emoji:'🇯🇵', score:8.0, grade:'C' },
+    { code:'KR', name:'한국', emoji:'🇰🇷', score:2.7, grade:'E' }
+  ]
+};
+
+var ADV_GRADE_COLORS = { A:'#0d904f', B:'#1a73e8', C:'#e37400', D:'#ea8600', E:'#d93025' };
+var ADV_GRADE_BG = { A:'#e6f4ea', B:'#e8f0fe', C:'#fef7e0', D:'#fef1e6', E:'#fce8e6' };
+
+function renderBenchmarkChart(containerId, entries) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var maxScore = 14;
+  var barMaxPx = 200;
+  var rowH = 32, gap = 6;
+  var labelW = 90, gradeW = 32, scoreW = 40;
+  var svgW = labelW + barMaxPx + gradeW + scoreW + 20;
+  var svgH = entries.length * (rowH + gap) + 10;
+  var svg = '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" style="width:100%;max-width:' + svgW + 'px;" role="img">';
+  entries.forEach(function(e, i) {
+    var y = i * (rowH + gap) + 5;
+    var bw = (e.score / maxScore) * barMaxPx;
+    var isKorea = e.code === 'KR';
+    var barColor = isKorea ? '#d93025' : (ADV_GRADE_COLORS[e.grade] || '#78909c');
+    var textFill = isKorea ? '#d93025' : 'var(--color-text)';
+    var fontW = isKorea ? '700' : '400';
+    if (isKorea) svg += '<rect x="0" y="' + y + '" width="' + svgW + '" height="' + rowH + '" rx="4" fill="#fff3f3"/>';
+    svg += '<text x="' + (labelW - 6) + '" y="' + (y + rowH/2 + 4) + '" text-anchor="end" font-size="12" fill="' + textFill + '" font-weight="' + fontW + '" font-family="var(--font)">' + e.emoji + ' ' + e.name + '</text>';
+    svg += '<rect x="' + labelW + '" y="' + (y + 4) + '" width="' + barMaxPx + '" height="' + (rowH - 8) + '" rx="4" fill="var(--color-border-light)"/>';
+    svg += '<rect x="' + labelW + '" y="' + (y + 4) + '" width="' + Math.max(bw, 3) + '" height="' + (rowH - 8) + '" rx="4" fill="' + barColor + '"/>';
+    if (bw > 28) {
+      svg += '<text x="' + (labelW + bw - 5) + '" y="' + (y + rowH/2 + 4) + '" text-anchor="end" font-size="11" font-weight="600" fill="#fff" font-family="var(--font)">' + e.score.toFixed(1) + '</text>';
+    } else {
+      svg += '<text x="' + (labelW + bw + 5) + '" y="' + (y + rowH/2 + 4) + '" text-anchor="start" font-size="11" font-weight="600" fill="' + barColor + '" font-family="var(--font)">' + e.score.toFixed(1) + '</text>';
+    }
+    var gx = labelW + barMaxPx + 10;
+    svg += '<rect x="' + gx + '" y="' + (y + 6) + '" width="24" height="20" rx="4" fill="' + (ADV_GRADE_BG[e.grade] || '#f0f0f0') + '"/>';
+    svg += '<text x="' + (gx + 12) + '" y="' + (y + 20) + '" text-anchor="middle" font-size="11" font-weight="700" fill="' + (ADV_GRADE_COLORS[e.grade] || '#5f6368') + '" font-family="var(--font)">' + e.grade + '</text>';
+  });
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+var FRESHNESS_DATA = [
+  { name:'에어코리아 실시간 대기오염', claimed:'실시간 (1시간 단위)', actual:'최대 80분 지연 (집계 지연 포함)', severity:'medium' },
+  { name:'기상청 초단기예보', claimed:'매시 30분 발표', actual:'안정적 호출 가능 시점 매시 50분 (20분 추가 지연)', severity:'medium' },
+  { name:'기상청 단기예보', claimed:'3시간 단위 발표', actual:'발표 직후 10~20분 처리 지연', severity:'low' },
+  { name:'ITS 도로 교통소통 정보', claimed:'5분 단위 실시간', actual:'실제 10~15분 지연, 심야 최대 30분', severity:'medium' },
+  { name:'국토부 아파트 매매 실거래가', claimed:'일 (거래 신고 후 익일 공개)', actual:'계약 시점 기준 최대 31일 지연', severity:'high' },
+  { name:'금감원 DART 공시 목록', claimed:'실시간 (공시 접수 즉시)', actual:'정규시간 수분 내 반영 (모범 사례)', severity:'low' },
+  { name:'금융위/KRX 주식 상장종목 정보', claimed:'일 1회 (전일 종가)', actual:'영업일 오후 1시 이후 반영 (최대 37시간 지연)', severity:'high' },
+  { name:'한국은행 ECOS 경제통계', claimed:'통계 종류별 상이', actual:'명세와 대체로 일치 (잠정→확정 소급 수정 주의)', severity:'low' },
+  { name:'식품안전나라 식품영양성분 DB', claimed:'정기 갱신 (연 1~2회)', actual:'신제품 반영까지 수개월', severity:'low' },
+  { name:'교육부 NEIS 학교 급식 식단', claimed:'일 (학교별 식단 등록 기준)', actual:'당일 오전 9시 기준 20~30% 학교 미등록', severity:'medium' },
+  { name:'서울 지하철 실시간 도착정보', claimed:'실시간 (30초~1분 단위)', actual:'실제 30초~2분 (모범 사례)', severity:'low' }
+];
+
+function renderFreshnessTable() {
+  var tbody = document.getElementById('adv-freshness-tbody');
+  if (!tbody) return;
+  var sevColor = { high:'#fce8e6', medium:'#fef7e0', low:'#f8f9fa' };
+  var sevLabel = { high:'high', medium:'medium', low:'low' };
+  var sevTextColor = { high:'#d93025', medium:'#e37400', low:'#0d904f' };
+  var html = '';
+  FRESHNESS_DATA.forEach(function(row) {
+    var bg = row.severity === 'high' ? ' style="background:#fce8e6;"' : (row.severity === 'medium' ? ' style="background:#fef7e0;"' : '');
+    html += '<tr' + bg + '>';
+    html += '<td style="font-size:0.82rem;font-weight:' + (row.severity === 'high' ? '600' : '400') + ';">' + row.name + '</td>';
+    html += '<td style="font-size:0.8rem;">' + row.claimed + '</td>';
+    html += '<td style="font-size:0.8rem;">' + row.actual + '</td>';
+    html += '<td style="text-align:center;"><span style="font-size:0.7rem;padding:0.15rem 0.45rem;border-radius:4px;font-weight:600;background:' + (sevColor[row.severity]||'#f0f0f0') + ';color:' + (sevTextColor[row.severity]||'#5f6368') + ';">' + (sevLabel[row.severity]||row.severity) + '</span></td>';
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+var PAIN_POINTS_TOP10 = [
+  { rank:1, severity:'critical', title:'serviceKey 이중 인코딩(Double Encoding)', desc:'axios·requests·fetch 등 HTTP 클라이언트의 자동 URL 인코딩으로 이중 인코딩 발생. INVALID_SERVICEKEY 오류.', time:'4~9시간' },
+  { rank:2, severity:'critical', title:'CORS 미지원 — 프론트엔드 직접 호출 불가', desc:'전체 공공 API가 CORS 헤더 미지원. 브라우저 fetch/axios 호출 시 CORS 오류. 별도 프록시 서버 구축 강제.', time:'8~24시간' },
+  { rank:3, severity:'critical', title:'HTTP 200 응답 속에 숨겨진 에러 메시지', desc:'모든 에러 상황에서 HTTP 200 반환. 실제 에러는 XML 본문의 resultCode 필드에 포함. HTTP 표준 위반.', time:'3~6시간' },
+  { rank:4, severity:'high', title:'XML 강제 응답 포맷 및 JSON 부분 지원', desc:'공공 API 약 70%가 XML 기본. 게이트웨이 에러 시 JSON 설정 무관하게 XML 강제 반환.', time:'4~10시간' },
+  { rank:5, severity:'high', title:'API 문서가 HWP(아래아한글) 파일로 제공', desc:'공식 기술 문서를 .hwp 포맷으로 제공. macOS·Linux에서 별도 뷰어 필요.', time:'1~3시간' },
+  { rank:6, severity:'high', title:'173개 포털 파편화 — 포털마다 별도 계정 필요', desc:'data.go.kr 실제 게이트웨이 역할은 약 18% (Pattern A)에 불과. 나머지는 별도 포털 가입 필수.', time:'포털당 11~34시간' },
+  { rank:7, severity:'medium', title:'API 활용 신청 후 1~2시간 대기 (자동 승인임에도)', desc:'자동 승인 API도 키 활성화까지 1~2시간 소요. 수동 승인 API는 3~7일.', time:'0.5~2시간' },
+  { rank:8, severity:'high', title:'해외 IP 및 클라우드 서버 IP 차단', desc:'일부 공공 API가 국내 IP만 허용. AWS 해외 리전·클라우드 서버 차단.', time:'4~8시간' },
+  { rank:9, severity:'high', title:'무공지 점검 및 예고 없는 다운타임', desc:'사전 공지 없이 점검·응답 중단 빈번. 공식 상태 페이지(status page) 없음.', time:'2~8시간/회' },
+  { rank:10, severity:'high', title:'API Key 2년 만료 및 갱신 프로세스 부재', desc:'일반 인증키 2년 자동 만료. 만료 전 이메일 알림 없음. 무중단 갱신 불가.', time:'2~4시간/회' }
+];
+
+function renderPainPoints() {
+  var container = document.getElementById('adv-pain-grid');
+  if (!container) return;
+  var sevConfig = {
+    critical: { label:'심각', bg:'#fce8e6', border:'#f5c6c2', color:'#d93025' },
+    high: { label:'높음', bg:'#fef1e6', border:'#f5d6b0', color:'#ea8600' },
+    medium: { label:'중간', bg:'#fef7e0', border:'#f5e6a0', color:'#e37400' }
+  };
+  var html = '';
+  PAIN_POINTS_TOP10.forEach(function(p) {
+    var cfg = sevConfig[p.severity] || sevConfig.medium;
+    html += '<div class="card" style="border-left:4px solid ' + cfg.color + ';padding:1rem;">';
+    html += '<div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.5rem;">';
+    html += '<span style="font-size:1.1rem;font-weight:800;color:var(--color-border);min-width:1.5rem;">#' + p.rank + '</span>';
+    html += '<div style="flex:1;">';
+    html += '<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.3rem;">';
+    html += '<span style="font-weight:700;font-size:0.88rem;color:var(--color-text);">' + p.title + '</span>';
+    html += '<span style="font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;background:' + cfg.bg + ';color:' + cfg.color + ';font-weight:600;border:1px solid ' + cfg.border + ';">' + cfg.label + '</span>';
+    html += '</div>';
+    html += '<div style="font-size:0.78rem;color:var(--color-text-secondary);line-height:1.5;margin-bottom:0.4rem;">' + p.desc + '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--color-text-secondary);">예상 디버그 시간: <strong style="color:' + cfg.color + ';">' + p.time + '</strong></div>';
+    html += '</div></div></div>';
+  });
+  container.innerHTML = html;
+}
+
+var NEWLY_DISCOVERED = [
+  { name:'공간정보 오픈플랫폼 (브이월드)', institution:'국토교통부/국토지리정보원', category:'GIS', significance:'high', apis:20, notes:'OGC 국제표준(WMS/WFS) 지원. 디지털트윈 국토 서비스 연계.' },
+  { name:'공공 마이데이터 포털 (mydata.go.kr)', institution:'행정안전부', category:'행정', significance:'high', apis:167, notes:'167종 행정정보 전송 API. 2026년 8월 금융·의료·통신 마이데이터 통합 예정.' },
+  { name:'스마트치안 빅데이터 플랫폼', institution:'경찰청/치안정책연구소', category:'안전', significance:'high', apis:30, notes:'112신고·범죄통계·CCTV 위치·생활인구 융합 데이터 148종 제공.' },
+  { name:'환경 빅데이터 플랫폼', institution:'한국환경공단/환경부', category:'환경', significance:'high', apis:50, notes:'탄소배출량·대기·수질·폐기물·ESG 데이터 API 포함.' },
+  { name:'한국전력거래소 OpenAPI', institution:'한국전력거래소(KPX)', category:'에너지', significance:'high', apis:15, notes:'실시간 전력수급·신재생에너지 출력·SMP 전력거래가격.' },
+  { name:'질병관리청 감염병 포털', institution:'질병관리청', category:'보건', significance:'high', apis:12, notes:'1~4급 법정감염병 전수감시 데이터. 코로나19 이후 신설.' },
+  { name:'보건의료 빅데이터 통합 플랫폼', institution:'보건복지부/한국보건의료정보원', category:'보건', significance:'high', apis:25, notes:'국가건강검진·의료기관 이용현황·만성질환 통계 포함.' },
+  { name:'디지털플랫폼정부 민관협업 API', institution:'행안부/디지털플랫폼정부위원회', category:'행정', significance:'medium', apis:5, notes:'2024년 신규. 정부 LLM 연계 API 시범 운영 중.' },
+  { name:'지방행정인허가 (LOCALDATA)', institution:'행정안전부', category:'행정', significance:'high', apis:35, notes:'750만 업종·업소 현황 실시간 API. 28개 업종.' },
+  { name:'탄소중립 정보플랫폼', institution:'환경부', category:'환경', significance:'high', apis:8, notes:'ESG 의무공시 강화(2025~) 대응 탄소배출권 거래제 데이터.' }
+];
+
+function renderNewPortals() {
+  var container = document.getElementById('adv-new-portals-list');
+  if (!container) return;
+  var sigColors = { high:'#0d904f', medium:'#e37400', low:'#5f6368' };
+  var sigLabels = { high:'중요', medium:'보통', low:'낮음' };
+  var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.75rem;">';
+  NEWLY_DISCOVERED.forEach(function(p) {
+    var sc = sigColors[p.significance] || '#5f6368';
+    var sl = sigLabels[p.significance] || p.significance;
+    html += '<div style="padding:0.9rem;border:1px solid var(--color-border-light);border-radius:var(--radius);background:var(--color-surface);">';
+    html += '<div style="font-weight:700;font-size:0.85rem;color:var(--color-text);margin-bottom:0.2rem;">' + p.name + '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--color-text-secondary);margin-bottom:0.4rem;">' + p.institution + '</div>';
+    html += '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem;">';
+    html += '<span style="font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;background:var(--color-primary-light);color:var(--color-primary);font-weight:600;">' + p.category + '</span>';
+    html += '<span style="font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;background:' + (p.significance==='high'?'var(--color-grade-a-bg)':'var(--color-grade-c-bg)') + ';color:' + sc + ';font-weight:600;">중요도: ' + sl + '</span>';
+    html += '<span style="font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;background:var(--color-bg);color:var(--color-text-secondary);">~' + p.apis + '개 API</span>';
+    html += '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--color-text-secondary);line-height:1.4;">' + p.notes + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderAdvancedSections() {
+  renderBenchmarkChart('adv-bench-uf', BENCHMARK_DATA.user_friendliness);
+  renderBenchmarkChart('adv-bench-ai', BENCHMARK_DATA.ai_readiness);
+  renderFreshnessTable();
+  renderPainPoints();
+  renderNewPortals();
+}
+
+/* ===================================================================
    INIT
    =================================================================== */
 function init() {
@@ -15681,6 +15954,7 @@ function init() {
   initComparator(data);
   renderPrivateComparison();
   renderDeprecatedTimeline();
+  renderAdvancedSections();
   initNavigation();
 }
 
