@@ -369,6 +369,7 @@ body {
 .tag--green { background: var(--color-grade-a-bg); color: var(--color-grade-a); border-color: transparent; }
 .tag--red { background: var(--color-grade-e-bg); color: var(--color-grade-e); border-color: transparent; }
 .tag--orange { background: var(--color-grade-d-bg); color: var(--color-grade-d); border-color: transparent; }
+.tag--purple { background: #f3e5f5; color: #7b1fa2; border-color: transparent; }
 
 /* ===== Link ===== */
 .portal-link {
@@ -1074,6 +1075,23 @@ const API_STYLE_LABELS = {
   type_e_soap: 'Type E (SOAP)'
 };
 
+// Color mappings for tags
+var SIGNUP_COLORS = {
+  email: 'green', phone: '', social: 'green', certificate: 'red', institutional: 'red'
+};
+var APPROVAL_COLORS = {
+  auto_instant: 'green', auto_delayed: '', manual: 'orange', institutional: 'red'
+};
+var API_STYLE_COLORS = {
+  type_a_query: 'blue', type_b_path: 'purple', type_c_mixed: 'orange', type_d_extension: '', type_e_soap: 'red'
+};
+var CATEGORY_COLORS = {
+  TRAF: '#1a73e8', HLTH: '#d93025', ENV: '#0d904f', REAL: '#ea8600', EDU: '#9334e6',
+  FOOD: '#e37400', ADMN: '#5c6bc0', FIN: '#00897b', EMPL: '#ff7043', WELF: '#ad1457',
+  CULT: '#6d4c41', AGRI: '#2e7d32', TECH: '#1565c0', SAFE: '#c62828', LAND: '#4e342e',
+  LAW: '#37474f', TRAD: '#00695c', ETC: '#78909c', MULTI: '#1a73e8'
+};
+
 const API_STYLE_DESCRIPTIONS = {
   type_a_query: '?serviceKey=xxx&param=val 형태. data.go.kr 표준.',
   type_b_path: '/KEY/format/service/params 형태. 서울, ECOS 등.',
@@ -1285,7 +1303,11 @@ function getPortalField(p, key) {
 function filterData(data) {
   var search = (currentFilters.search || '').toLowerCase();
   return data.filter(function(p) {
-    if (search && p.name.toLowerCase().indexOf(search) === -1 && (p.name_en || '').toLowerCase().indexOf(search) === -1) return false;
+    if (search) {
+      var fields = [p.name, p.name_en || '', p.institution, CATEGORY_LABELS[p.category] || p.category, p.url, p.notes || ''];
+      var found = fields.some(function(f) { return f.toLowerCase().indexOf(search) !== -1; });
+      if (!found) return false;
+    }
     if (currentFilters.category && p.category !== currentFilters.category) return false;
     if (currentFilters.portal_type && p.portal_type !== currentFilters.portal_type) return false;
     if (currentFilters.uf_grade && p.user_friendliness.grade !== currentFilters.uf_grade) return false;
@@ -1375,10 +1397,11 @@ function renderTable(data) {
     html += '<tr data-id="' + p.id + '" class="' + (expandedRow === p.id ? 'expanded' : '') + '" tabindex="0" role="button" aria-expanded="' + (expandedRow === p.id) + '">';
     html += '<td><strong>' + escapeHtml(p.name) + '</strong></td>';
     html += '<td>' + escapeHtml(p.institution) + '</td>';
-    html += '<td>' + tagHtml(CATEGORY_LABELS[p.category] || p.category, 'blue') + '</td>';
-    html += '<td>' + escapeHtml(SIGNUP_METHOD_LABELS[p.signup.method] || p.signup.method) + '</td>';
-    html += '<td>' + escapeHtml(APPROVAL_LABELS[p.approval.method] || p.approval.method) + '</td>';
-    html += '<td>' + tagHtml(API_STYLE_LABELS[p.api_style] || p.api_style) + '</td>';
+    var catColor = CATEGORY_COLORS[p.category] || '#78909c';
+    html += '<td><span class="tag" style="background:' + catColor + '15;color:' + catColor + ';border-color:' + catColor + '40;">' + (CATEGORY_LABELS[p.category] || p.category) + '</span></td>';
+    html += '<td>' + tagHtml(SIGNUP_METHOD_LABELS[p.signup.method] || p.signup.method, SIGNUP_COLORS[p.signup.method] || '') + '</td>';
+    html += '<td>' + tagHtml(APPROVAL_LABELS[p.approval.method] || p.approval.method, APPROVAL_COLORS[p.approval.method] || '') + '</td>';
+    html += '<td>' + tagHtml(API_STYLE_LABELS[p.api_style] || p.api_style, API_STYLE_COLORS[p.api_style] || '') + '</td>';
     html += '<td>' + gradeHtml(p.user_friendliness.grade) + '</td>';
     html += '<td>' + gradeHtml(p.ai_readiness.grade) + '</td>';
     html += '</tr>';
