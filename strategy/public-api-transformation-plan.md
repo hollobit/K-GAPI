@@ -1,7 +1,7 @@
 # 대한민국 공공 Open API 전환 전략 보고서
 
 **작성일**: 2026-04-12
-**대상 독자**: 행정안전부, 공공데이터전략위원회, NIA, 공공기관信息化 담당자
+**대상 독자**: 행정안전부, 공공데이터전략위원회, NIA, 공공기관 정보화 담당자
 **작성 방법**: 멀티 에이전트 분석 (MCP 전환 전략 / 글로벌 수준 / 사용자 중심 원칙 / Agentic AI 프로토콜 / API 전환 방식 — 5개 에이전트 동시 분석)
 
 ---
@@ -144,7 +144,7 @@ data.go.kr는 "차이점"만 표시
 ```
 2026 (Phase 1: Pilot)
 ───────────────────────────────
-Q2: Pattern A 5개 MCP 전환 (부동산, 에어코리아, 기상청,国土부 일부)
+Q2: Pattern A 5개 MCP 전환 (부동산, 에어코리아, 기상청, 국토부 일부)
 Q3: Pattern B 5개 MCP 전환 (DART, ECOS, 서울, KOSIS, 관광공사)
 Q4: Pattern C 3개试探 (기상청 등 양쪽 제공, 차이점 분석)
 
@@ -250,7 +250,7 @@ Q4: 목표 달성 — 60+ 포털 MCP 통합
 
 ## Part 4: 글로벌 수준 도달 전략
 
-### 4.1 단계별追赶 전략
+### 4.1 단계별 추진 전략
 
 #### 단기 (6개월 — 서버 설정 변경만, 예산 없음)
 
@@ -267,7 +267,7 @@ Q4: 목표 달성 — 60+ 포털 MCP 통합
 
 | 조치 | 내용 | 실행 주체 |
 |------|------|----------|
-| 한국 정부 API 디자인 표준 고시 | 영국 GDS参照 (JSON 필수, OpenAPI 3.0, CORS, Rate Limit) | 행정안전부 |
+| 한국 정부 API 디자인 표준 고시 | 영국 GDS 참조 (JSON 필수, OpenAPI 3.0, CORS, Rate Limit) | 행정안전부 |
 | OpenAPI 3.0 신규 API 의무 제출 | 신규 API 등록 시 필수 제출 | NIA |
 | API Key HTTP 헤더 전환 | URL 파라미터 → `Authorization: Bearer` | 각 기관 |
 | 에러 응답 RFC 7807 표준화 | `type`, `title`, `status`, `detail` 구조 | 각 기관 |
@@ -302,7 +302,7 @@ Q4: 목표 달성 — 60+ 포털 MCP 통합
 
 **단계적 전환**:
 ```
-현재 분산형(B) → 1-2년 후 하이브리드奠基(C-) → 3-4년 후 하이브리드强化(C+) → 5년+ 준중앙형(A-)
+현재 분산형(B) → 1-2년 후 하이브리드 기반(C-) → 3-4년 후 하이브리드 강화(C+) → 5년+ 준중앙형(A-)
 ```
 
 ---
@@ -317,7 +317,7 @@ Q4: 목표 달성 — 60+ 포털 MCP 통합
 | **A2A** | Google Cloud | v1.0.0 (2026.3), 100+ 파트너, Linux Foundation AAIF | ★★★★★ 최고 — 기관간 에이전트 상호운용 |
 | **ANP** | OSS (GaoWei Chang) | Apache 2.0, W3C DID 기반 분산 | ★★★ 중 — 중앙집중적 공공 서비스와 충돌 가능 |
 | **ACP** | IBM/BeeAI | UI 자동화 용도 | ★★★ 중 — 공공 서비스에 부적합 |
-| **LangGraph** | LangChain | 그래프 기반 상태 관리, 체크포인팅, 인간割り込み | ★★★★★ 최고 — 복잡한 워크플로우 처리 |
+| **LangGraph** | LangChain | 그래프 기반 상태 관리, 체크포인팅, 인간 인터럽트 | ★★★★★ 최고 — 복잡한 워크플로우 처리 |
 | **W3C WebMCP** | Google+Microsoft | Chrome 146 preview (2026.2) | ★★★★ 우수 — 브라우저 연동 |
 
 ### 5.2 권장 프로토콜 스택: MCP + A2A + LangGraph
@@ -345,9 +345,9 @@ W3C WebMCP = 브라우저의 "문" (웹 인터랙션)
 #### Phase 2 (2027): MCP + A2A + LangGraph
 ```
 [MCP Servers] → [A2A Protocol] → [LangGraph Orchestrator] → [Gateway]
- - 기관间 에이전트 위임
+ - 기관간 에이전트 위임
  - A2A로 에이전트 발견 및 통신
- - LangGraph로 복잡한业务流程 관리
+ - LangGraph로 복잡한 비즈니스 프로세스 관리
 ```
 
 #### Phase 3 (2028+): Full Stack
@@ -395,13 +395,13 @@ W3C WebMCP = 브라우저의 "문" (웹 인터랙션)
 - [ ] HTTP 상태코드 정상화 (50% 적용)
 - [ ] CORS + X-RateLimit 헤더 (data.go.kr 100%)
 - [ ] 상위 50개 API OpenAPI 스펙 작성
-- [ ] MCP-Ready 인증 도입 (条件: JSON + OpenAPI + CORS + 즉시 키 발급)
+- [ ] MCP-Ready 인증 도입 (조건: JSON + OpenAPI + CORS + 즉시 키 발급)
 - [ ] **MCP 서버 10개 신규 구축** (부동산, 기상청, 에어코리아, DART, ECOS 등)
 
 #### 2027 — 표준화·통합년
 - [ ] 행정안전부 "한국 정부 API 디자인 표준" 고시
 - [ ] OpenAPI 3.0 신규 API 의무 제출
-- [ ] API Key HTTP 헤더 전환试点
+- [ ] API Key HTTP 헤더 전환 방식
 - [ ] 에러 응답 RFC 7807 표준화
 - [ ] **MCP 서버 20개 추가 구축**
 - [ ] **LangGraph Federation 프로토타입** (3개 MCP 연동)
@@ -413,14 +413,14 @@ W3C WebMCP = 브라우저의 "문" (웹 인터랙션)
 - [ ] Gateway 확대 (200개+ API)
 - [ ] **MCP 서버 30개 추가 구축** (총 60개+)
 - [ ] **A2A + LangGraph 프로덕션** (10개+ 복합 시나리오)
-- [ ] **W3C WebMCP Browser Integration试点**
+- [ ] **W3C WebMCP Browser Integration 방식**
 
 ### 6.3 인센티브 및 지원
 
 | 유형 | 내용 | 대상 |
 |------|------|------|
 | **재정 지원** | MCP 서버 개발 보조금 500만원/건 | 개별 개발자/팀 |
-| **인증 우대** | MCP-Ready 인증取得 API 우선 노출 | 공공 기관 |
+| **인증 우대** | MCP-Ready 인증 취득 API 우선 노출 | 공공 기관 |
 | **표준 채택 인센티브** | OpenAPI 스펙 제공 시 data.go.kr 우선 노출 | 각 기관 |
 | **우수 오픈소스 포상** | GitHub Stars 500+ 달성 시 포상 | 개발자/팀 |
 | **기술 지원** | NIA 표준 가이드 배포 + 컨설팅 | 공공 기관 |
@@ -519,7 +519,7 @@ W3C WebMCP = 브라우저의 "문" (웹 인터랙션)
 - [Plans.md](/Users/jonghongjeon/git/gapi/Plans.md) — 173개 포털 전수 평가
 - [mcp-strategy.md](/Users/jonghongjeon/git/gapi/output/mcp-strategy.md) — MCP 전환 전략
 - [policy_recommendations.md](/Users/jonghongjeon/git/gapi/output/policy_recommendations.md) — 정책 제언서
-- [korea_improvement_roadmap.md](/Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md) — 海外 사례 기반 개선 로드맵
+- [korea_improvement_roadmap.md](/Users/jonghongjeon/git/gapi/output/korea_improvement_roadmap.md) — 해외 사례 기반 개선 로드맵
 - [global_mcp_ecosystem.md](/Users/jonghongjeon/git/gapi/output/global_mcp_ecosystem.md) — 해외 정부 MCP 생태계
 - [api_design_guidelines_comparison.md](/Users/jonghongjeon/git/gapi/output/api_design_guidelines_comparison.md) — 5개국 API 가이드라인 비교
 - [governance_models.md](/Users/jonghongjeon/git/gapi/output/governance_models.md) — 거버넌스 모델 비교
@@ -539,7 +539,7 @@ W3C WebMCP = 브라우저의 "문" (웹 인터랙션)
 - [A2A Protocol](https://a2a-protocol.org/) — Google 주축 에이전트 상호운용 표준
 - [MCP 2026 Roadmap](https://agentsource.co/articles/mcp-2026-roadmap-what-is-changing) — MCP 에이전트-투-에이전트 위임 예정
 - [LangGraph Multi-Agent Tutorial](https://langchain-tutorials.github.io/langgraph-multi-agent-systems-2026/) — 상태 관리 + 워크플로우
-- [W3C WebMCP](https://webmcp.link/) — Chrome 146 preview,浏览器 에이전트 연동
+- [W3C WebMCP](https://webmcp.link/) — Chrome 146 preview, 브라우저 에이전트 연동
 
 ---
 

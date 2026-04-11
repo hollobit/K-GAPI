@@ -15,7 +15,7 @@
 | 문제 유형 | 구체적 사례 | 개발자 영향 |
 |-----------|------------|------------|
 | **60+ 독립 포털** | data.go.kr, gov.kr, 각 시/도별로 각자 가입 | 계정 관리 부담 |
-| **5가지 호출 패턴** | Type A (Query全体), B (Path全体), C (Path+Query混), D (拡張子方式), E (SOAP/POST) | 범용 클라이언트 불가 |
+| **5가지 호출 패턴** | Type A (Query 전체), B (Path 전체), C (Path+Query 혼합), D (확장자 방식), E (SOAP/POST) | 범용 클라이언트 불가 |
 | **인증 체계 다양** | serviceKey, crtfc_key, apiKey, confmKey, 공동인증서 | 매번 인증 로직 개발 |
 | **XML 기본 응답** | 2.5배 토큰 소모, JSON 미지원 API 다수 | 파싱 부담 |
 | **HTTP 200 일관 반환** | 실제 에러를 body 내부에서 확인해야 함 | AI 자동 판단 불가 |
@@ -131,7 +131,7 @@ TOOL = Tool(
 | 라이선스 | Apache-2.0 |
 | 버전 | v0.7.0 (2026-04-12) |
 | 도구 수 | **6개 Lite / 11개 Full** (도메인 엔티티 통합) |
-| API 커버 | **287개** (276개国会 + 8 국민참여입법센터 + 3개 NABO) |
+| API 커버 | **287개** (276개 국회 + 8 국민참여입법센터 + 3개 NABO) |
 
 ** arsitektur**:
 
@@ -142,7 +142,7 @@ TOOL = Tool(
 │  도메인 엔티티 기반 도구 설계                             │
 │  ─────────────────────────────────────────────────────  │
 │  assembly_bill      — 의안 검색+추적+통계 (하나의 도구)   │
-│  assembly_member    —议员 검색+분석 (하나의 도구)         │
+│  assembly_member    —국회의원 검색+분석 (하나의 도구)         │
 │  assembly_session  — 일정+회의록+표결 (하나의 도구)       │
 │  assembly_org      — 위원회+청원+입법예고 (하나의 도구)   │
 │  bill_detail       — 의안 상세 (Full 전용, 4개 API 묶음) │
@@ -205,7 +205,7 @@ const MCP_PROFILE = process.env.MCP_PROFILE || "lite"; // 6개 vs 11개 도구
 |------|-------------------|------------------------|
 | 언어 | Python | **TypeScript** |
 | 도구 수 | 12개 (개별 API 1:1 매핑) | **6개 Lite / 11개 Full (도메인 통합)** |
-| API 커버 | 의안/위원/표결/위원회 | **287개 API (国会 + 国民참여입법 + NABO)** |
+| API 커버 | 의안/위원/표결/위원회 | **287개 API (국회 + 국민참여입법 + NABO)** |
 | Transport | stdio만 | **stdio + HTTP ( dual )** |
 | OpenAPI | 없음 | **제공 (/openapi.json)** |
 | CLI | 없음 | **지원** |
@@ -220,7 +220,7 @@ const MCP_PROFILE = process.env.MCP_PROFILE || "lite"; // 6개 vs 11개 도구
 | **도구 수** | 58개 | 6개 Lite / 11개 Full |
 | **UI/Language** | TypeScript | TypeScript (Node.js) |
 | **설치 방식** | npm 글로벌, Claude Desktop | npm + CLI + 원격 URL (fly.dev) |
-| **추가 가공** | HWP→Markdown, 약칭 변환 |立法 라이프사이클 통합 추적 |
+| **추가 가공** | HWP→Markdown, 약칭 변환 |입법 라이프사이클 통합 추적 |
 | **배포** | npm registry, fly.dev | npm registry, fly.dev |
 | **인증** | 법제처 API Key (무료, 이메일 가입) | 열린국회정보 API Key (무료, 이메일 가입) |
 | **OpenAPI 스펙** | 자체 Tool schema | **자체 Tool schema + REST API (/openapi.json)** |
@@ -251,7 +251,7 @@ const MCP_PROFILE = process.env.MCP_PROFILE || "lite"; // 6개 vs 11개 도구
 ├─────────────────────────────────────────────────────────────┤
 │  Phase 3: 통합 Public API MCP 게이트웨이                     │
 │  ──────────────────────────────────────────────────────────  │
-│  단일 Entry Point로 60+ 포털 통합查询                        │
+│  단일 Entry Point로 60+ 포털 통합 조회                        │
 │  예: "최근 통과된 근로법 관련 의안과 해석례" 한 번에 조회     │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -260,12 +260,12 @@ const MCP_PROFILE = process.env.MCP_PROFILE || "lite"; // 6개 vs 11개 도구
 
 **우선순위 매트릭스 (Impact × 개발 난이도)**:
 
-| Impact ↓ / 난이도 → | 低リスク | 高リスク |
+| Impact ↓ / 난이도 → | 저위험 | 고위험 |
 |---------------------|---------|---------|
 | **高 Impact** | ★ **1순위** (기상, 부동산, 경제지표) | ▲ **2순위** (KOSIS, ECOS) — 스파이크 필요 |
 | **低 Impact** | ○ **3순위** (문화, 도서관) | ✕ **후순위** |
 
-**1순위 구현 대상 (低リスク + 高Impact)**:
+**1순위 구현 대상 (저위험 + 고영향)**:
 
 | 순위 | 대상 API | 기관 | 이유 | 현재 상태 |
 |------|---------|------|------|----------|
@@ -273,7 +273,7 @@ const MCP_PROFILE = process.env.MCP_PROFILE || "lite"; // 6개 vs 11개 도구
 | 2 | **기상청 중기예보/특보** | 기상청 | 생활 밀착, Pattern C (apihub.kma.go.kr에 전체 API) | basic MCP exists |
 | 3 | **에어코리아 대기정보** | 환경부 | Pattern A, 구현 쉬움 | MCP 없음 |
 | 4 | **기업 재무정보 (DART)** | 금감원 | Pattern B, 재무제표 분석 수요 높음 | dartpoint-mcp 존재 (3 stars) |
-| 5 | **부동산 시세 (R-ONE)** | 한국부동산원 | Pattern B,房价 예측 수요 | MCP 없음 |
+| 5 | **부동산 시세 (R-ONE)** | 한국부동산원 | Pattern B,주택가격 예측 수요 | MCP 없음 |
 
 **구축 표준**:
 
@@ -331,7 +331,7 @@ Tool Description:
 
 ```python
 # 각 MCP 서버가 독립 실행 (.stdio)
-# Federation은 상위 레이어에서协调
+# Federation은 상위 레이어에서 조정
 
 # 예: 통합 검색 서비스
 class PublicDataFederation:
@@ -370,7 +370,7 @@ class PublicDataFederation:
 │                  Unified Public API Gateway              │
 │  ┌─────────────────────────────────────────────────────┐ │
 │  │  Natural Language Query → Tool Routing Layer       │ │
-│  │  "최근 통과된 근로법 수정안과 관련 판례を検索"       │ │
+│  │  "최근 통과된 근로법 수정안과 관련 판례를 검색"       │ │
 │  └─────────────────────────────────────────────────────┘ │
 │                           ↓                              │
 │  ┌─────────────────────────────────────────────────────┐ │
@@ -406,7 +406,7 @@ UNIFIED_PUBLIC_API_TOOL = Tool(
         "properties": {
             "query": {
                 "type": "string",
-                "description": "자연어 검색어 (예: '半导体 규제 완화 의안 2025')",
+                "description": "자연어 검색어 (예: '반도체 규제 완화 의안 2025')",
             },
             "category": {
                 "type": "string",
@@ -435,14 +435,14 @@ UNIFIED_PUBLIC_API_TOOL = Tool(
 
 | 현재 상태 | 목표 | 방법 |
 |-----------|------|------|
-| XML only | XML + JSON 선택 → JSON 기본 | API 버저닝으로 자연迁移 |
+| XML only | XML + JSON 선택 → JSON 기본 | API 버저닝으로 자연 전이 |
 | HTTP 200 일관 | 에러 시 4xx 반환 (점진적) | 응답 형식 표준 가이드 배포 |
 | Closed API | OpenAPI 스펙 공개 (권장) | incentive（우대/인증）제공 |
 | CORS 미지원 | 서버사이드 MCP로 해결 | CORS 지원을 신규 의무화 |
 
 ### 4.2 원칙 2: "기능 통합"보다 "인증 통합"
 
-가장 큰摩擦（摩擦）비용: **계정 관리**
+가장 큰 마찰 비용: **계정 관리**
 
 ```
 현재: 개발자가 60+ 포털에 각각 가입해야 함
@@ -453,7 +453,7 @@ UNIFIED_PUBLIC_API_TOOL = Tool(
 - 통합: 정부 SSO (GPKI 연동) + 통합 API Key 발급
 ```
 
-### 4.3 원칙 3: "표준 강제"보다 "适配（アダプタ）Layer"
+### 4.3 원칙 3: "표준 강제"보다 "어댑터 Layer"
 
  기관별로 기존 API를 유지하면서, **MCP 어댑터 계층**을 통해 통합
 
@@ -507,7 +507,7 @@ MCP 서버를 만드는 것은 기술적 작업이지만, **지속 가능한 생
 | 오픈소스 기여 가이드 | 없음 | 정부 주도 MCP 컨트리뷰션 가이드 |
 
 `★ Insight ─────────────────────────────────────`
-**핵심 통찰**: MCP 서버는 기술적 solution이지만, 지속 가능하려면 **데이터 거버넌스**가 병행되어야 함. 기술만 있고 거버넌스가 없으면 "잃어버린 MCP服务器"가 됨.
+**핵심 통찰**: MCP 서버는 기술적 solution이지만, 지속 가능하려면 **데이터 거버넌스**가 병행되어야 함. 기술만 있고 거버넌스가 없으면 "잃어버린 MCP 제공기"가 됨.
 `─────────────────────────────────────────────────`
 
 ---
@@ -536,7 +536,7 @@ MCP 서버를 만드는 것은 기술적 작업이지만, **지속 가능한 생
 ```
 
 **KPI**:
-- MCP 서버 3개新增
+- MCP 서버 3개 새롭게 증가
 - GitHub Stars 합계 100+ 증가
 - 활용 개발자 수 50+
 
@@ -546,7 +546,7 @@ MCP 서버를 만드는 것은 기술적 작업이지만, **지속 가능한 생
 
 ```
 월 7-9: MCP Federation 프로토타입
-  - "의안 →议员 → 정당 → 정책" 검색 체인 실험
+  - "의안 →국회의원 → 정당 → 정책" 검색 체인 실험
   - assembly-api-mcp + korean-law-mcp + gov.kr-mcp 연동
 
 월 10-12: 통합 Gateway 베타
@@ -711,7 +711,7 @@ Deployment Options (우선순위 순):
 |------|------|------------|
 | MCP 서버 수 | ~10개 (추정) | 50+ |
 | 커버 포털 수 | ~10개 | 30+ |
-| 평균 개발 시간 (API 1개) | 1주 (매번重复) | 1시간 (재사용) |
+| 평균 개발 시간 (API 1개) | 1주 (매번 반복) | 1시간 (재사용) |
 | AI 에이전트 활용률 | ~5% | 30%+ |
 | 개발자 만족도 (1~5) | 2.1 | 4.0 |
 
